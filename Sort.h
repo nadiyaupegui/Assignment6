@@ -5,6 +5,7 @@
 #include <cstdlib> //for exit
 #include <iostream>
 #include <fstream>
+#include <ctime>
 using namespace std;
 
 
@@ -18,24 +19,34 @@ public:
 
     void setArr(std::string fileIn);
     T* getArr(char c) const;
+    void printArr(char c) const;
 
-    T* quick();
-    T* merge();
-    T* insertion();
-    T* bubble();
+    void quick();
+    void quickSort(int left, int right);
+    int partition(int left, int right);
+
+    void merge();
+    void insertion();
+    void bubble();
+
+
 
 private:
+    int size;
     T* quickArr;
     T* mergeArr;
     T* insertionArr;
-    T* bubbleArr;
-    
+    T* bubbleArr; 
 };
 
 template <class T>
-Sort<T>::Sort()
+Sort<T>::Sort():size(0)
 {
-    //deliberately empty
+    quickArr = NULL;
+    mergeArr = NULL;
+    insertionArr = NULL;
+    bubbleArr = NULL;
+
 }
 
 
@@ -66,8 +77,12 @@ void Sort<T>::setArr(std::string fileIn)
 	exit(1);
     }
 
-    int size;
     inStream >> size;
+    if (size < 1)
+    {
+	cout << "Error. Invlaid size given." << endl;
+	exit(1);
+    }
     
     quickArr = new T[size];
     mergeArr = new T[size];
@@ -108,19 +123,139 @@ T* Sort<T>::getArr(char c) const
 
 
 template <class T>
-T* Sort<T>::quick(){}
+void Sort<T>::printArr(char c) const
+{
+    if (size == 0)
+    	return;
+
+    T* arr;
+    if (c == 'b')
+        arr = bubbleArr;
+    else if (c == 'm')
+        arr = mergeArr;
+    else if (c == 'i')
+        arr = insertionArr;
+    else if (c == 'q')
+        arr = quickArr;
+    else
+        return;
+
+
+    for(int i = 0; i < size; ++i)
+    {
+	cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+template <class T>
+void Sort<T>::quick()
+{
+    if (size == 0)
+	return;
+    quickSort(0, size - 1);
+}
 
 
 template <class T>
-T* Sort<T>::merge(){}
+void Sort<T>::quickSort(int left, int right)
+{
+    
+    int index = partition(left, right);
+
+    if (left < index - 1)
+    {
+	quickSort(left, index - 1);
+    }
+
+    if (index < right)
+    {
+	quickSort(index, right);
+    }
+}
 
 
 template <class T>
-T* Sort<T>::insertion(){}
+int Sort<T>::partition(int left, int right)
+{
+    T pivot = quickArr[(left + right) / 2]; //choose pivot point
+	
+    while (left <= right)
+    {
+    //find element on the left that belongs on the right side
+    	while (quickArr[left] < pivot)
+	{
+	    left++;
+	}
+	//Find element on the right that belongs on the left
+	while (quickArr[right] > pivot)
+	{
+	    right--;
+	}
+	//Swap numbers and move left and right indicies
+	if (left <= right)
+	{
+ 	    T temp = quickArr[left];
+	    quickArr[left] = quickArr[right];
+	    quickArr[right] = temp;
+
+	    left++;
+	    right--;
+	}
+    }
+    return left;
+}
 
 
 template <class T>
-T* Sort<T>::bubble(){}
+void Sort<T>::merge()
+{
+    if(size == 0)
+	return;
+
+    
+}
+
+
+template <class T>
+void Sort<T>::insertion()
+{
+    if(size == 0)
+	return;
+
+    for(int i = 1; i < size; ++i)
+    {
+	T temp = insertionArr[i];
+        int j = i;
+        while (j > 0 && insertionArr[j-1] >= temp)
+	{
+	    insertionArr[j] = insertionArr[j-1];
+	    --j;
+	}
+	insertionArr[j] = temp;
+    }    
+}
+
+
+template <class T>
+void Sort<T>::bubble()
+{
+    if(size == 0)
+	return;
+
+    for(int i = 0; i < size; ++i)
+    {
+	for (int j = 0; j < size - 1; ++j)
+	{
+	    if(bubbleArr[j] > bubbleArr[j+1])
+	    {
+		T temp = bubbleArr[j+1];
+		bubbleArr[j+1] = bubbleArr[j];
+		bubbleArr[j] = temp;
+	    }
+	}
+    }
+}
 
 
 #endif //SORT_H
