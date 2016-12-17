@@ -26,6 +26,8 @@ public:
     int partition(int left, int right);
 
     void merge();
+    void subMerge(T* arr, int left, int right);
+    void merge(T* arr, int left, int right);
     void insertion();
     void bubble();
 
@@ -206,15 +208,64 @@ int Sort<T>::partition(int left, int right)
     return left;
 }
 
-
 template <class T>
 void Sort<T>::merge()
 {
+    subMerge(mergeArr, 0, size - 1);
+}
+
+
+template <class T>
+void Sort<T>::subMerge(T* arr, int left, int right)
+{
     if(size == 0)
 	return;
-
-    
+    if (left < right)
+    {
+	int m = (left + right)/2;
+	subMerge(arr, left, m);
+	subMerge(arr, m+1, right);
+	merge(arr, left, right);
+    }
 }
+
+
+template <class T>
+void Sort<T>::merge(T* arr, int left, int right)
+{
+    int i, j, k, m;
+    int n = right - left + 1;
+    T* temp = new T[n];
+
+    k = 0;
+    m = (left + right)/2;
+
+    for (i = left; i <= m; ++i)
+    {
+	temp[k++] = arr[i];
+    }
+    for (j = right; j >= m+1; --j)
+    {
+	temp[k++] = arr[j];
+    }
+
+    i = 0;
+    j = n - 1;
+    k = left;
+
+    while(i <= j)
+    {
+	if(temp[i] <= temp[j])
+	{
+	    arr[k++] = temp[i++];
+	}
+	else
+	{
+	    arr[k++] = temp[j--];
+	}
+    }
+}
+
 
 
 template <class T>
