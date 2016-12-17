@@ -20,6 +20,7 @@ public:
     void setArr(std::string fileIn);
     T* getArr(char c) const;
     void printArr(char c) const;
+    int getSize() const;
 
     void quick();
     void quickSort(int left, int right);
@@ -123,6 +124,11 @@ T* Sort<T>::getArr(char c) const
 	return NULL;
 }
 
+template <class T>
+int Sort<T>::getSize() const
+{
+    return size;
+}
 
 template <class T>
 void Sort<T>::printArr(char c) const
